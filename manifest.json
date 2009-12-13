@@ -1,0 +1,15 @@
+{
+  "name": "Tiny RPN",
+  "description": "Popup RPN calculator",
+  "version": "1.0",
+  "icons": {
+    "48": "rps-48.png",
+    "32": "rps-32.png"
+  },
+  "browser_action": {
+    "default_icon": "rps-19.png",
+    "default_title": "Tiny RPN",
+    "name": "RPN Calculator",
+    "popup": "popup.html"
+  }
+}

@@ -1,0 +1,39 @@
+body {
+    margin: 0;
+    padding: 0;
+    width: 180px;
+    background: #ffffff;
+    color: #000000;
+    font: 11px sans-serif;
+}
+.container {
+    margin: 0;
+    padding: 0;
+}
+#entry {
+    margin: 0;
+    padding: 4px;
+    width: 168px; /* assuming native border is 2px */
+}
+#stack {
+    margin: 11px 0 0 0;
+    padding: 0;
+    border: 2px transparent; /* ditto, should match entry */
+}
+#stack li {
+    background: -webkit-gradient(linear, 0 0, 0 100%, from(#fff), to(#eee));
+    border: 1px solid #999;
+    margin: -1px 0 0 0;
+    padding: 4px;
+}
+#placeholder {
+    text-align: center;
+    font-style: italic;
+    color: #ccc;
+}
+#error {
+    margin: 11px 0 0 0;
+    padding: 0;
+    display: none;
+    color: #900;
+}

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Tiny RPN Help</title>
+  <style>
+    body { width: 42em; margin: auto; }
+  </style>
+</head>
+
+<body>
+  <h1>Tiny RPN</h1>
+
+  <p>Tiny RPN is a <a href=
+  "http://en.wikipedia.org/wiki/Reverse_Polish_notation">Reverse
+  Polish Notation</a> calculator, operated entirely with the keyboard.
+  It displays the contents of the stack as you modify it (WYSIWYC —
+  What You See Is What You Calculate :-)).</p>
+
+  <h2>Instructions</h2>
+  <ul>
+    <li>
+      <p>To enter several numbers, separate them with spaces or commas, or
+      press Enter/Return after each one. Negative numbers can be entered by
+      using a leading underscore.</p>
+    </li>
+
+    <li>
+      <p>To perform an arithmetic operation, type its character (e.g. + for
+      addition) in the entry box; instead of displaying the character, the
+      stack will be updated. The arithmetic operations are:</p>
+
+      <blockquote>
+        <p><code>+ - * + / % ~ ^ &amp; | \</code></p>
+      </blockquote>
+
+      <p>(<code>^</code> is exponentiation, because most people expect it
+      there, so xor is moved to <code>\</code>. <code>~</code> is unary
+      negation.)</p>
+    </li>
+
+    <li>
+      <p>To perform a named operation, type in its name followed by a
+      space/comma/enter. Named commands are:</p>
+
+      <blockquote>
+        <p><code>and or not pop drop drop2 swap dup dup2 clear noop</code></p>
+      </blockquote>
+
+      <p>plus these standard (to JavaScript, anyway) math functions:</p>
+
+      <blockquote>
+        <p><code>abs acos asin atan atan2 ceil cos exp floor log max min pow
+        random round sin sqrt tan</code></p>
+      </blockquote>
+
+      <p>and these constants:</p>
+
+      <blockquote>
+        <p><code>E LN2 LN10 LOG2E LOG10E PI SQRT1_2 SQRT2</code></p>
+      </blockquote>
+
+      <p>(Also, at the moment, <code>;</code> is an alias
+      for <code>swap</code>. All such shortcut keys will be subject to
+      change until I get some consensus from users on what is
+      sensible.)</p>
+    </li>
+
+    <li>
+      <p>Numbers can also be popped by pressing the Backspace key when the
+      entry box is empty. If you use this method or
+      <code>pop</code>, the number on the top of the stack will be
+      returned to the entry box so you can edit it.
+      <code>drop</code> will remove the number on top of the
+      stack without doing this.</p>
+    </li>
+
+    <li>
+      <p>The popup can be closed with the Esc key (this is true of all
+      browser action popups, but I didn't realize it until I wrote one
+      that involved typing).</p>
+  </ul>
+
+  <h2>Plans for Future Versions</h2>
+  <p>Is Tiny RPN not adequate for you yet? Here's what I have planned
+  and would love help with. <a href="http://github.com/decklin/tiny-rpn">Fork
+  me on Github!</a></p>
+  <ul>
+    <li><p>Animated visual feedback</p></li>
+    <li><p>Undo</p></li>
+    <li><p>Non-float modes (at least money)</p></li>
+    <li><p>Remove anything that would gratuitously surprise an HP user</p></li>
+    <li><p>Programmability</p></li>
+    <li><p>Hooks to open web sites (e.g. Google currency conversion)</p></li>
+  </ul>
+
+  <h2>Credits</h2>
+  <p>Our icon was drawn by Randall Munroe for XKCD (who was gracious
+  enough to license it Creative Commons BY-NC. See the source code for
+  a complete listing of licenses.) Here's the original:
+  <a href="http://www.xkcd.com/645/">Reverse Polish Sausage</a>.</p>
+</body>
+</html>
