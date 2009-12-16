@@ -1,10 +1,23 @@
-// Table of operations. The machinery below will pop however many
-// arguments the function takes, and apply them in to it in "normal"
-// order (i.e. reverse order of being popped). If the function returns
-// a value (or values), it (or they) will be pushed back.
+// Table of operations.
+//
+// RULES FOR OPS:
+//
+//   1. Take the number of arguments that you want popped from the stack.
+//      They will be applied to you in bottom-up order.
+//
+//   2. If you are pure, return a list of values you want pushed back
+//      onto the stack (again, bottom-up). The resulting head will be
+//      pushed onto the undo list.
+//
+//      NOTE: If you only have one value to return, you can cheat and
+//      return it directly instead of wrapping it in a list. It's an ugly
+//      hack, but it lets us reuse Math.* without boilerplate.
+//
+//   3. If you have side effects, don't return anything, just create a
+//      new head (nothing will be pushed onto the undo list above it).
 
 var ops = {
-// Arithmetic
+    // Arithmetic
     '+': function(a, b) { return a + b; },
     '-': function(a, b) { return a - b; },
     '*': function(a, b) { return a * b; },
@@ -13,80 +26,165 @@ var ops = {
     '%': function(a, b) { return a % b; },
     '~': function(a) { return -a; },
     '^': Math.pow,
-// Bits
+
+    // Bits
     '&': function(a, b) { return a & b; },
     '|': function(a, b) { return a | b; },
     '\\': function(a, b) { return a ^ b; }, // now I'm just making shit up
-// Logical
+
+    // Logical
     'or': function(a, b) { return a || b; },
     'and': function(a, b) { return a && b; },
     'not': function(a) { return !a; },
-// Stack
+
+    // Stack
     'swap': function(a, b) { return [b, a]; },
-    'pop': function(a) { setEntry(a); return null; },
-    'drop': function(a) { return null; },
-    'drop2': function(a,b) { return null; },
+    'pop': function(a) { setEntry(a); return []; },
+    'drop': function(a) { return []; },
+    'drop2': function(a, b) { return []; },
     'dup': function(a) { return [a, a]; },
     'dup2': function(a) { return [a, a, a]; },
-    'clear': function() { this.splice(0, this.length); return null; },
-// Meta
-    'noop': function() { return null; }
+    'clear': function() { this.pushOnto(null, []); },
+
+    // Meta
+    'undo': function() { this.rollBack(); },
+    'noop': function() { return []; }
+
 };
 
-// Fill in some simple stuff using the builtin Math object. For some reason,
-// we can't enumerate it, so here's a list of the interesting attributes.
+// Fill in some simple things using the builtin Math object. For some
+// reason, we can't enumerate it, so here's a list of the interesting
+// attributes.
 
-var mathConsts = ['E','LN2','LN10','LOG2E','LOG10E','PI','SQRT1_2','SQRT2'];
-var mathFuncs = ['abs','acos','asin','atan','atan2','ceil','cos','exp','floor',
-                 'log','max','min','pow','random','round','sin','sqrt','tan'];
+var mathFunctions = [
+    'abs',
+    'acos',
+    'asin',
+    'atan',
+    'atan2',
+    'ceil',
+    'cos',
+    'exp',
+    'floor',
+    'log',
+    'max',
+    'min',
+    'pow',
+    'random',
+    'round',
+    'sin',
+    'sqrt',
+    'tan'
+];
+var mathConstants = [
+    'E',
+    'LN2',
+    'LN10',
+    'LOG2E',
+    'LOG10E',
+    'PI',
+    'SQRT1_2',
+    'SQRT2'
+];
 
-mathConsts.forEach(function(a) { ops[a] = function() { return Math[a]; }; });
-mathFuncs.forEach(function(a) { ops[a] = Math[a]; });
+mathFunctions.forEach(function(f) {
+    ops[f] = Math[f];
+});
+mathConstants.forEach(function(c) {
+    ops[c] = function() { return Math[c]; };
+});
 
-// Aliases... not really sure about any of this. Need to consult an old hat.
+// Aliases... not really sure. Need to consult an old hat.
 
 ops[';'] = ops['swap'];
 
-// The stack. Nothing more than an array with an entry point for evaluating
-// ops, which returns the value that should be placed back in the entry box
-// (i.e. a number if the command was "pop", blank otherwise).
+// Our stack is implemented as a bunch of immutable linked lists that
+// share structure. The user can therefore undo back to any previous
+// point in time by popping the (mutable) list of head pointers.
 
-var stack = [];
+function UndoableStack(vals) {
+    this.heads = [];
+    if (vals)
+        this.pushOnto(null, vals);
+}
 
-stack.dispatch = function(op) {
-    if (op) var f = ops[op];
-    else return;
+function Datum(val, next) {
+    this.value = val;
+    this.next = next;
+}
 
-    if (!f) {
-        setError('unknown command: ' + op);
-    } else if (f.length > this.length) {
-        setError('not enough numbers on stack');
-    } else {
-        try {
-            var args = this.splice(this.length - f.length, f.length);
-            var result = f.apply(this, args);
-            if (result != undefined) {
-                if (result.length) this.push.apply(this, result);
-                else this.push(result);
+UndoableStack.prototype = {
+    curHead: function() {
+        return this.heads.length ? this.heads[this.heads.length-1] : null;
+    },
+    pushOnto: function(head, vals) {
+        vals.forEach(function(v) { head = new Datum(v, head); });
+        this.heads.push(head);
+    },
+    push: function(val) {
+        this.heads.push(new Datum(val, this.curHead()));
+    },
+    pop: function() {
+        this.heads.push(this.curHead().next);
+    },
+    rollBack: function() {
+        if (this.heads.length > 1)
+            this.heads.pop();
+        else
+            throw 'nothing to undo';
+    },
+    length: function() {
+        var n = 0;
+        for (var p = this.curHead(); p; p = p.next)
+            n++;
+        return n;
+    },
+    forEach: function(f) {
+        for (var p = this.curHead(); p; p = p.next)
+            f(p.value);
+    },
+    dispatch: function(op) {
+        if (op)
+            var f = ops[op];
+        else
+            return;
+        if (!f) {
+            setError('unknown command: ' + op);
+        } else if (f.length > this.length()) {
+            setError('not enough numbers on stack');
+        } else {
+            try {
+                var args = [], head = this.curHead();
+                for (var i = 0; i < f.length; i++) {
+                    args.unshift(head.value);
+                    head = head.next;
+                }
+                var result = f.apply(this, args);
+                if (result)
+                    this.pushOnto(head, makeList(result));
+                setSuccess();
+            } catch (e) {
+                setError(e);
             }
-            setSuccess();
-        } catch (e) {
-            setError(e);
         }
     }
 };
+
+function makeList(v) {
+    return v.length == undefined ? [v] : v;
+}
 
 // DOM handling. We recreate the <ol> from scratch every time(!) right now,
 // but I'll fix that so I can add animation. At some point.
 
 function redraw() {
     var ol = document.getElementById('stack');
-    if (stack.length > 0) {
+    if (stack.curHead()) {
         ol.innerHTML = '';
-        stack.forEach(function(d) {
+        stack.forEach(function(v) {
             var li = document.createElement('li');
-            li.innerText = d;
-            ol.insertBefore(li, ol.firstElementChild);
+            li.innerText = v;
+            ol.appendChild(li);
         });
     } else {
         ol.innerHTML = '<li id="placeholder">(empty)</li>';
@@ -105,7 +203,9 @@ function setSuccess() {
         style.display = 'none';
         innerHTML = '';
     }
-    localStorage.stack = JSON.stringify(stack);
+    var curStack = [];
+    stack.forEach(function(v) { curStack.unshift(v); });
+    localStorage.curStack = JSON.stringify(curStack);
 }
 
 // Since the operator keys dispatch, we are only maybe "parsing" out one
@@ -168,11 +268,14 @@ function keyPress(ev) {
     redraw();
 }
 
+var stack;
+
 function init() {
     document.getElementById('entry').focus();
-    if (localStorage.stack) {
-        stack.push.apply(stack, JSON.parse(localStorage.stack));
+    if (localStorage.curStack) {
+        stack = new UndoableStack(JSON.parse(localStorage.curStack));
     } else {
+        stack = new UndoableStack();
         setError('welcome! <a href="help.html" target="_blank">' +
                  '(want instructions?)</a>');
     }
