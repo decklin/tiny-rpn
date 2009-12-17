@@ -19,8 +19,8 @@
         -webkit-border-radius: 10px;
         -webkit-box-shadow: 2px 2px 2px #000000;
     }
-    .ctrlkeys { width: 80%; }
-    .ctrlkeys th { text-align: left; }
+    table { width: 80%; margin: auto; }
+    th { background: #eee; text-align: left; }
   </style>
   <script>
     function init() {
@@ -52,41 +52,320 @@
       addition) in the entry box; instead of displaying the character, the
       stack will be updated. The arithmetic operations are:</p>
 
-      <blockquote>
-        <p><code>+ - * + / % ~ ^ &amp; | \</code></p>
-      </blockquote>
-
-      <p>(<code>^</code> is exponentiation, because most people expect it
-      there, so xor is moved to <code>\</code>. <code>~</code> is unary
-      negation.)</p>
+      <table>
+        <tr>
+          <th>Operator</th>
+          <th>Pops</th>
+          <th>Pushes</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td><code>+</code></td>
+          <td>2</td>
+          <td>1</td>
+          <td>Add</td>
+        </tr>
+        <tr>
+          <td><code>-</code></td>
+          <td>2</td>
+          <td>1</td>
+          <td>Subtract</td>
+        </tr>
+        <tr>
+          <td><code>*</code></td>
+          <td>2</td>
+          <td>1</td>
+          <td>Multiply</td>
+        </tr>
+        <tr>
+          <td><code>/</code></td>
+          <td>2</td>
+          <td>1</td>
+          <td>Divide</td>
+        </tr>
+        <tr>
+          <td><code>%</code></td>
+          <td>2</td>
+          <td>1</td>
+          <td>Modulus</td>
+        </tr>
+        <tr>
+          <td><code>~</code></td>
+          <td>1</td>
+          <td>1</td>
+          <td>Negate</td>
+        </tr>
+        <tr>
+          <td><code>^</code></td>
+          <td>2</td>
+          <td>1</td>
+          <td>Raise to power</td>
+        </tr>
+        <tr>
+          <td><code>&amp;</code></td>
+          <td>2</td>
+          <td>1</td>
+          <td>Bitwise AND</td>
+        </tr>
+        <tr>
+          <td><code>|</code></td>
+          <td>2</td>
+          <td>1</td>
+          <td>Bitwise OR</td>
+        </tr>
+        <tr>
+          <td><code>\</code></td>
+          <td>2</td>
+          <td>1</td>
+          <td>Bitwise XOR</td>
+        </tr>
+      </table>
     </li>
+
+    <p>Tip: you don't have to enter a space between a number and one
+    of the above operators. When you press the operator key, the
+    number in the entry box will be pushed automatically.</p>
 
     <li>
       <p>To perform a named operation, type in its name followed by a
       space/comma/enter. Named commands are:</p>
 
-      <blockquote>
-        <p><code>and or not pop drop drop2 swap dup dup2 clear undo
-        iradix oradix rradix noop</code></p>
-      </blockquote>
+      <table>
+        <tr>
+          <th>Command</th>
+          <th>Pops</th>
+          <th>Pushes</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td><code>and</code></td>
+          <td>2</td>
+          <td>1</td>
+          <td>Logical AND</td>
+        </tr>
+        <tr>
+          <td><code>or</code></td>
+          <td>2</td>
+          <td>1</td>
+          <td>Logical OR</td>
+        </tr>
+        <tr>
+          <td><code>not</code></td>
+          <td>2</td>
+          <td>1</td>
+          <td>Logical NOT</td>
+        </tr>
+        <tr>
+          <td><code>pop</code></td>
+          <td>1</td>
+          <td>0</td>
+          <td>Pop back to entry box</td>
+        </tr>
+        <tr>
+          <td><code>drop</code></td>
+          <td>1</td>
+          <td>0</td>
+          <td>Pop and discard</td>
+        </tr>
+        <tr>
+          <td><code>drop2</code></td>
+          <td>2</td>
+          <td>0</td>
+          <td>Pop and discard twice</td>
+        </tr>
+        <tr>
+          <td><code>swap</code></td>
+          <td>0</td>
+          <td>0</td>
+          <td>Exchange top two numbers</td>
+        </tr>
+        <tr>
+          <td><code>dup</code></td>
+          <td>0</td>
+          <td>1</td>
+          <td>Duplicate top number</td>
+        </tr>
+        <tr>
+          <td><code>dup2</code></td>
+          <td>0</td>
+          <td>2</td>
+          <td>Duplicate top number twice</td>
+        </tr>
+        <tr>
+          <td><code>clear</code></td>
+          <td>0</td>
+          <td>N/A</td>
+          <td>Clear entire stack</td>
+        </tr>
+        <tr>
+          <td><code>undo</code></td>
+          <td>0</td>
+          <td>0</td>
+          <td>Undo previous operation</td>
+        </tr>
+        <tr>
+          <td><code>iradix</code></td>
+          <td>1</td>
+          <td>0</td>
+          <td>Set input radix</td>
+        </tr>
+        <tr>
+          <td><code>oradix</code></td>
+          <td>1</td>
+          <td>0</td>
+          <td>Set output radix</td>
+        </tr>
+        <tr>
+          <td><code>rradix</code></td>
+          <td>0</td>
+          <td>0</td>
+          <td>Reset input/output radixes to 10</td>
+        </tr>
+        <tr>
+          <td><code>noop</code></td>
+          <td>0</td>
+          <td>0</td>
+          <td>Do nothing</td>
+        </tr>
+      </table>
 
       <p>plus these standard (to JavaScript, anyway) math functions:</p>
 
-      <blockquote>
-        <p><code>abs acos asin atan atan2 ceil cos exp floor log max min pow
-        random round sin sqrt tan</code></p>
-      </blockquote>
+      <table>
+        <tr>
+          <th>Function</th>
+          <th>Pops</th>
+          <th>Pushes</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td><code>abs</code></td>
+          <td>1</td>
+          <td>1</td>
+          <td>Absolute value</td>
+        </tr>
+        <tr>
+          <td><code>acos</code></td>
+          <td>1</td>
+          <td>1</td>
+          <td>Arccosine of angle in radians</td>
+        </tr>
+        <tr>
+          <td><code>asin</code></td>
+          <td>1</td>
+          <td>1</td>
+          <td>Arcsine of angle in radians</td>
+        </tr>
+        <tr>
+          <td><code>atan</code></td>
+          <td>1</td>
+          <td>1</td>
+          <td>Arctangent of angle in radians</td>
+        </tr>
+        <tr>
+          <td><code>atan2</code></td>
+          <td>2</td>
+          <td>1</td>
+          <td>Arctangent of quotient</td>
+        </tr>
+        <tr>
+          <td><code>ceil</code></td>
+          <td>1</td>
+          <td>1</td>
+          <td>Least integer greater than</td>
+        </tr>
+        <tr>
+          <td><code>cos</code></td>
+          <td>1</td>
+          <td>1</td>
+          <td>Cosine of angle in radians</td>
+        </tr>
+        <tr>
+          <td><code>exp</code></td>
+          <td>1</td>
+          <td>1</td>
+          <td>Raise e to power</td>
+        </tr>
+        <tr>
+          <td><code>floor</code></td>
+          <td>1</td>
+          <td>1</td>
+          <td>Greatest integer less than</td>
+        </tr>
+        <tr>
+          <td><code>log</code></td>
+          <td>1</td>
+          <td>1</td>
+          <td>Natural logarithm</td>
+        </tr>
+        <tr>
+          <td><code>max</code></td>
+          <td>2</td>
+          <td>1</td>
+          <td>Greater of two numbers</td>
+        </tr>
+        <tr>
+          <td><code>min</code></td>
+          <td>2</td>
+          <td>1</td>
+          <td>Lesser of two numbers</td>
+        </tr>
+        <tr>
+          <td><code>pow</code></td>
+          <td>2</td>
+          <td>1</td>
+          <td>Raise to power</td>
+        </tr>
+        <tr>
+          <td><code>random</code></td>
+          <td>0</td>
+          <td>1</td>
+          <td>Random float in range [0,1)</td>
+        </tr>
+        <tr>
+          <td><code>round</code></td>
+          <td>1</td>
+          <td>1</td>
+          <td>Round to nearest integer</td>
+        </tr>
+        <tr>
+          <td><code>sin</code></td>
+          <td>1</td>
+          <td>1</td>
+          <td>Sine of angle in radians</td>
+        </tr>
+        <tr>
+          <td><code>sqrt</code></td>
+          <td>1</td>
+          <td>1</td>
+          <td>Square root</td>
+        </tr>
+        <tr>
+          <td><code>tan</code></td>
+          <td>1</td>
+          <td>1</td>
+          <td>Tangent of angle in radians</td>
+        </tr>
+      </table>
 
       <p>and these constants:</p>
 
-      <blockquote>
-        <p><code>E LN2 LN10 LOG2E LOG10E PI SQRT1_2 SQRT2</code></p>
-      </blockquote>
+      <table>
+        <tr><th>Constant</th><th>Description</th></tr>
+        <tr><td><code>E</code></td><td>Base of natural logarithm</td></tr>
+        <tr><td><code>LN2</code></td><td>Natural logarithm of 2</td></tr>
+        <tr><td><code>LN10</code></td><td>Natural logarithm of 10</td></tr>
+        <tr><td><code>LOG2E</code></td><td>Base-2 log of e</td></tr>
+        <tr><td><code>LOG10E</code></td><td>Base-10 log of e</td></tr>
+        <tr><td><code>PI</code></td><td>π</td></tr>
+        <tr><td><code>SQRT1_2</code></td><td>Square root of ½</td></tr>
+        <tr><td><code>SQRT2</code></td><td>Square root of 2</td></tr>
+      </table>
     </li>
 
     <li>
       <p>Some functions are available via control keys:</p>
-      <table class="ctrlkeys">
+      <table>
         <tr><th>Key</th><th>Operation</th></tr>
         <tr><td>Ctrl-Z</td><td><code>undo</code></td></tr>
         <tr><td>Ctrl-T</td><td><code>swap</code> (think "transpose")</td></tr>
@@ -95,17 +374,12 @@
 
     <li>
       <p>Numbers can also be popped by pressing the Backspace key when the
-      entry box is empty. If you use this method or
-      <code>pop</code>, the number on the top of the stack will be
-      returned to the entry box so you can edit it.
-      <code>drop</code> will remove the number on top of the
-      stack without doing this.</p>
+      entry box is empty.</p>
     </li>
 
     <li>
-      <p>The popup can be closed with the Esc key (this is true of all
-      browser action popups, but I didn't realize it until I wrote one
-      that involved typing).</p>
+      <p>The popup can be closed with the Esc key.</p>
+    </li>
   </ul>
 
   <h2>Plans for Future Versions</h2>
