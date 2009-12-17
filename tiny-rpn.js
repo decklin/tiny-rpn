@@ -233,6 +233,7 @@ function keyDown(ev) {
     } else if (ev.ctrlKey) {
         var c = String.fromCharCode(ev.which);
         if (ctrlBindings[c]) {
+            parseTerm();
             stack.dispatch(ctrlBindings[c]);
             ev.preventDefault();
             redraw();
