@@ -159,7 +159,7 @@ UndoableStack.prototype = {
                     head = head.next;
                 }
                 var result = f.apply(this, args);
-                if (result)
+                if (result !== undefined)
                     this.pushOnto(head, makeList(result));
                 setSuccess();
             } catch (e) {
