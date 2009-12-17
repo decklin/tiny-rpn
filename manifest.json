@@ -13,5 +13,9 @@
     "default_title": "Tiny RPN",
     "name": "RPN Calculator",
     "popup": "popup.html"
-  }
+  },
+  "permissions": [
+    "http://*/*",
+    "https://*/*"
+  ]
 }

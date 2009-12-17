@@ -1,3 +1,17 @@
+var stack;
+var termSep = /[\s,]/;
+var openString = /^"[^"]*$/;
+var stringTerm = /^"([^"]*)"?$/;
+var alphaNumeric = /\w+/;
+var inputRadix = 10;
+var outputRadix = 10;
+
+function xhr(url, callback) {
+    chrome.extension.sendRequest({url: url}, function(xhr) {
+        callback.apply(xhr);
+    });
+}
+
 // Table of operations. For an explanation of how they should work, refer
 // to the documentation on the options page.
 
@@ -107,6 +121,19 @@ var ops = {
     },
     rradix: function() {
         inputRadix = outputRadix = 10;
+        return [];
+    },
+
+    // Web
+    convert: function(amount, unitA, unitB) {
+        var q = amount + ' ' + unitA + ' in ' + unitB;
+        var url = 'http://google.com/search?q=' + encodeURIComponent(q);
+        xhr(url, function() {
+            var pat = /<h2 class=r style=".*?"><b>.*? = (.*?)<\/b><\/h2>/;
+            var m = this.responseText.match(pat);
+            stack.push(parseFloat(m[1]));
+            redraw();
+        });
         return [];
     },
 
@@ -342,18 +369,19 @@ function keyPress(ev) {
     }
 }
 
-var stack;
-var termSep = /[\s,]/;
-var openString = /^"[^"]*$/;
-var stringTerm = /^"([^"]*)"?$/;
-var alphaNumeric = /\w+/;
-var inputRadix = 10;
-var outputRadix = 10;
+// Do this here so we can override everything above, but before the page
+// actually loads.
 
 if (config.has('customOps'))
     eval('(function(){'+config.get('customOps')+'})();');
 
 function init() {
+    // Big ugly hack: attempt to determine if we are being loaded
+    // outside of the popup by checking outerHeight. No guarantees
+    // this will continue to work!
+    if (window.outerHeight)
+        document.body.style.padding = '5px';
+
     if (config.has('curStack')) {
         stack = new UndoableStack(config.get('curStack'));
     } else {
@@ -361,11 +389,7 @@ function init() {
         setError('welcome! <a href="help.html" target="_blank">' +
                  '(want instructions?)</a>');
     }
+
     document.getElementById('entry').focus();
     redraw();
-    // Another big ugly hack: attempt to determine if we are being loaded
-    // outside of the popup by checking outerHeight. No guarantees this will
-    // continue to work!
-    if (window.outerHeight)
-        document.body.style.padding = '5px';
 }

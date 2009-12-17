@@ -19,3 +19,13 @@ config.defaults({
         "// ops['^'] = Math.pow;"
     ].join('\n')
 });
+
+chrome.extension.onRequest.addListener(function(req, src, send) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', req.url, true);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4)
+            send(xhr);
+    };
+    xhr.send();
+});
