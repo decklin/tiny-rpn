@@ -48,6 +48,9 @@ var ops = {
 
     // Meta
     'undo': function() { this.rollBack(); },
+    'iradix': function(a) { inputRadix = a; return []; },
+    'oradix': function(a) { outputRadix = a; return []; },
+    'rradix': function() { inputRadix = outputRadix = 10; return []; },
     'noop': function() { return []; }
 
 };
@@ -179,7 +182,7 @@ function redraw() {
         ol.innerHTML = '';
         stack.forEach(function(v) {
             var li = document.createElement('li');
-            li.innerText = v;
+            li.innerText = v.toString(outputRadix);
             ol.appendChild(li);
         });
     } else {
@@ -212,7 +215,7 @@ function parseTerm() {
     var val = entry.value;
     if (val) {
         entry.value = '';
-        var parsed = parseFloat(val.replace(/^_/, '-'));
+        var parsed = parseNumber(val);
         if (isNaN(parsed)) {
             stack.dispatch(val);
         } else {
@@ -220,6 +223,11 @@ function parseTerm() {
             setSuccess();
         }
     }
+}
+
+function parseNumber(s) {
+    s = s.replace(/^_/, '-');
+    return inputRadix == 10 ? parseFloat(s) : parseInt(s, inputRadix);
 }
 
 function setEntry(val) {
@@ -280,6 +288,8 @@ function keyPress(ev) {
 }
 
 var stack;
+var inputRadix = 10;
+var outputRadix = 10;
 
 function init() {
     if (localStorage.curStack) {
