@@ -16,9 +16,11 @@ body {
     width: 168px; /* assuming native border is 2px */
 }
 #stack {
-    margin: 11px 0 0 0;
-    padding: 0;
+    margin: 10px 0 0 0;
+    padding: 1px 0 0 0;
     border: 2px transparent; /* ditto, should match entry */
+    max-height: 600px;
+    overflow-y: auto;
 }
 #stack li {
     background: -webkit-gradient(linear, 0 0, 0 100%, from(#fff), to(#eee));
