@@ -8,9 +8,15 @@
     .ctrlkeys { width: 80%; }
     .ctrlkeys th { text-align: left; }
   </style>
+  <script>
+    function init() {
+        document.getElementById('applink').href =
+            chrome.extension.getURL('popup.html');
+    }
+  </script>
 </head>
 
-<body>
+<body onload="init();">
   <h1>Tiny RPN</h1>
 
   <p>Tiny RPN is a <a href=
@@ -99,6 +105,14 @@
     <li><p>Programmability</p></li>
     <li><p>Hooks to open web sites (e.g. Google currency conversion)</p></li>
   </ul>
+
+  <h2>Standalone Use</h2>
+  <p>If you would like to set up an application shortcut in order
+  to use Tiny RPN outside of your normal browser window, use this
+  page: <a id="applink">popup.html</a>. (Chrome currently disables the
+  "Create Application Shortcuts" menu item for extension pages, but
+  running <code>chrome --app=URL</code> from the command line does work.
+  Right-click on the link above to copy the URL.)</p>
 
   <h2>Credits</h2>
   <p>Our icon was drawn by Randall Munroe for XKCD (who was gracious

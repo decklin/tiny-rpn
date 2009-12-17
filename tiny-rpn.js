@@ -281,7 +281,6 @@ function keyPress(ev) {
 var stack;
 
 function init() {
-    document.getElementById('entry').focus();
     if (localStorage.curStack) {
         stack = new UndoableStack(JSON.parse(localStorage.curStack));
     } else {
@@ -289,5 +288,11 @@ function init() {
         setError('welcome! <a href="help.html" target="_blank">' +
                  '(want instructions?)</a>');
     }
+    document.getElementById('entry').focus();
     redraw();
+    // Another big ugly hack: attempt to determine if we are being loaded
+    // outside of the popup by checking outerHeight. No guarantees this will
+    // continue to work!
+    if (window.outerHeight)
+        document.body.style.padding = '5px';
 }
