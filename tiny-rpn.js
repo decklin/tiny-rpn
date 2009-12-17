@@ -294,6 +294,9 @@ var stack;
 var inputRadix = 10;
 var outputRadix = 10;
 
+if (localStorage.customOps)
+    eval(localStorage.customOps);
+
 function init() {
     if (localStorage.curStack) {
         stack = new UndoableStack(JSON.parse(localStorage.curStack));

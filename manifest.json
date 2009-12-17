@@ -6,6 +6,8 @@
     "48": "rps-48.png",
     "32": "rps-32.png"
   },
+  "background_page": "background.html",
+  "options_page": "options.html",
   "browser_action": {
     "default_icon": "rps-19.png",
     "default_title": "Tiny RPN",

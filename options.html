@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Tiny RPN Options</title>
+  <link rel="stylesheet" type="text/css" href="options.css" />
+  <script>
+    function init() {
+        if (localStorage.customOps);
+            document.getElementById('custom').value = localStorage.customOps;
+    }
+    function save() {
+        localStorage.customOps = document.getElementById('custom').value;
+    }
+  </script>
+</head>
+
+<body onload="init();">
+<div class="content">
+  <h1>Options</h1>
+  <p>Enter any custom ops here. (TODO: document how this works.)</p>
+  <p><textarea id="custom" rows="24" cols="80"></textarea><br />
+  <input type="button" onclick="save();" value="Save"/></p>
+</div>
+</body>
+</html>
