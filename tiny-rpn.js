@@ -150,7 +150,8 @@ UndoableStack.prototype = {
         if (!f) {
             setError('unknown command: ' + op);
         } else if (f.length > this.length()) {
-            setError('not enough numbers on stack');
+            setError('stack too small (' + op + ' needs ' + f.length +
+                     ' argument' + (f.length > 1 ? 's' : '') + ')');
         } else {
             try {
                 var args = [], head = this.curHead();
