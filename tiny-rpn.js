@@ -234,7 +234,7 @@ UndoableStack.prototype = {
 };
 
 function makeList(v) {
-    return v.length == undefined ? [v] : v;
+    return v instanceof Array ? v : [v];
 }
 
 // DOM handling. We recreate the <ol> from scratch every time(!) right now,
@@ -272,23 +272,31 @@ function setSuccess() {
 // The user hit a dispatching key (maybe an op, maybe just whitespace), so
 // we should have either a number or a command in the entry box.
 
-function parseTerm() {
-    var entry = document.getElementById('entry');
-    var val = entry.value;
+function handleTerm() {
+    var val = document.getElementById('entry').value;
     if (val) {
-        entry.value = '';
-        var parsed = parseNumber(val);
-        if (isNaN(parsed)) {
-            stack.dispatch(val);
-        } else {
-            stack.push(parsed);
+        setEntry('');
+        var n = parseTerm(val);
+        if (n) {
+            stack.push(n);
             setSuccess();
+        } else {
+            stack.dispatch(val);
         }
     }
 }
 
+function parseTerm(s) {
+    var match = stringPat.exec(s);
+    if (match) {
+        return match[1];
+    } else {
+        var n = parseNumber(s.replace(/^_/, '-'));
+        return isNaN(n) ? undefined : n;
+    }
+}
+
 function parseNumber(s) {
-    s = s.replace(/^_/, '-');
     return inputRadix == 10 ? parseFloat(s) : parseInt(s, inputRadix);
 }
 
@@ -311,7 +319,7 @@ function keyDown(ev) {
     } else if (ev.ctrlKey) {
         var c = String.fromCharCode(ev.which);
         if (ctrlBindings[c]) {
-            parseTerm();
+            handleTerm();
             stack.dispatch(ctrlBindings[c]);
             ev.preventDefault();
             redraw();
@@ -324,7 +332,7 @@ function keyDown(ev) {
 function keyPress(ev) {
     var c = String.fromCharCode(ev.which);
     if (ops[c] || termSep.test(c)) {
-        parseTerm();
+        handleTerm();
         if (ops[c]) stack.dispatch(c);
         ev.preventDefault();
         redraw();
@@ -333,6 +341,7 @@ function keyPress(ev) {
 
 var stack;
 var termSep = /[\s,]/;
+var stringPat = /^"(.*?)"?$/;
 var inputRadix = 10;
 var outputRadix = 10;
 
