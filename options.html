@@ -18,7 +18,26 @@
 <body onload="init();">
 <div class="content">
   <h1>Options</h1>
-  <p>Enter any custom ops here. (TODO: document how this works.)</p>
+  <p>Define any custom operators here, by adding attributes to the
+  already-defined object <code>ops</code>. They should be functions
+  following these rules:</p>
+  <ol>
+    <li><p>Take the number of arguments that you want popped from the stack.
+    They will be applied to you in bottom-up order.</p></li>
+    <li><p>If you are pure, return a value or (possibly empty) list of values
+    you want pushed back onto the stack (again, bottom-up). The resulting head
+    will be pushed onto the undo list.</p>
+    <li><p>If you have side effects, don't return anything, just create a
+    new head (nothing will be pushed onto the undo list above it).</p></li>
+  </ol>
+  <p>Single-character operator names will dispatch as soon as their
+  key is pressed. Be careful! I recommend only using punctuation for
+  this.</p>
+  <p>To define a new control-key binding, add an attribute (which must
+  be an uppercase letter) to <code>ctrlBindings</code>.</p>
+  <p>You can also change the default values
+  of <code>inputRadix</code>, <code>outputRadix</code>,
+  or <code>termSep</code> (a regex).</p>
   <p><textarea id="custom" rows="24" cols="80"></textarea><br />
   <input type="button" onclick="save();" value="Save"/></p>
 </div>

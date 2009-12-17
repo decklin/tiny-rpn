@@ -6,5 +6,7 @@ ops[\'!\'] = ops[\'fact\'] = function(a) {\n\
     var fac = a;\n\
     while (--a) fac *= a;\n\
     return fac;\n\
-};\
+};\n\
+\n\
+ctrlBindings[\'N\'] = \'neg\';\
 ';

@@ -1,20 +1,5 @@
-// Table of operations.
-//
-// RULES FOR OPS:
-//
-//   1. Take the number of arguments that you want popped from the stack.
-//      They will be applied to you in bottom-up order.
-//
-//   2. If you are pure, return a list of values you want pushed back
-//      onto the stack (again, bottom-up). The resulting head will be
-//      pushed onto the undo list.
-//
-//      NOTE: If you only have one value to return, you can cheat and
-//      return it directly instead of wrapping it in a list. It's an ugly
-//      hack, but it lets us reuse Math.* without boilerplate.
-//
-//   3. If you have side effects, don't return anything, just create a
-//      new head (nothing will be pushed onto the undo list above it).
+// Table of operations. For an explanation of how they should work, refer
+// to the documentation on the options page.
 
 var ops = {
     // Arithmetic
