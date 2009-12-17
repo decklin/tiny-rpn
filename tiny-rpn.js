@@ -94,10 +94,6 @@ mathConstants.forEach(function(c) {
     ops[c] = function() { return Math[c]; };
 });
 
-// Aliases... not really sure. Need to consult an old hat.
-
-ops[';'] = ops['swap'];
-
 // Our stack is implemented as a bunch of immutable linked lists that
 // share structure. The user can therefore undo back to any previous
 // point in time by popping the (mutable) list of head pointers.
@@ -233,6 +229,20 @@ function setEntry(val) {
 // Backspace only sends KeyDown for some reason.
 
 function keyDown(ev) {
+    if (ev.ctrlKey) {
+        switch (ev.which) {
+        case 84: // T
+            stack.dispatch('swap');
+            ev.preventDefault();
+            redraw();
+            break;
+        case 90: // Z
+            stack.dispatch('undo');
+            ev.preventDefault();
+            redraw();
+            break;
+        }
+    }
     if (ev.which == 8 && document.getElementById('entry').value == '') {
         stack.dispatch('pop');
         ev.preventDefault();

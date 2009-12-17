@@ -5,6 +5,8 @@
   <title>Tiny RPN Help</title>
   <style>
     body { width: 42em; margin: auto; }
+    .ctrlkeys { width: 80%; }
+    .ctrlkeys th { text-align: left; }
   </style>
 </head>
 
@@ -60,11 +62,15 @@
       <blockquote>
         <p><code>E LN2 LN10 LOG2E LOG10E PI SQRT1_2 SQRT2</code></p>
       </blockquote>
+    </li>
 
-      <p>(Also, at the moment, <code>;</code> is an alias
-      for <code>swap</code>. All such shortcut keys will be subject to
-      change until I get some consensus from users on what is
-      sensible.)</p>
+    <li>
+      <p>Some functions are available via control keys:</p>
+      <table class="ctrlkeys">
+        <tr><th>Key</th><th>Operation</th></tr>
+        <tr><td>Ctrl-Z</td><td><code>undo</code></td></tr>
+        <tr><td>Ctrl-T</td><td><code>swap</code> (think "transpose")</td></tr>
+      </table>
     </li>
 
     <li>
