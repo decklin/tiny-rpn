@@ -204,32 +204,36 @@ function setSuccess() {
     localStorage.curStack = JSON.stringify(curStack);
 }
 
-// Since the operator keys dispatch, we are only maybe "parsing" out one
-// number. So this is pretty cheap.
+// The user hit a dispatching key (maybe an op, maybe just whitespace), so
+// we should have either a number or a command in the entry box.
 
 function parseTerm() {
     var entry = document.getElementById('entry');
     var val = entry.value;
-    entry.value = '';
-    var digits = /^_?[\d.]+/;
-    while (val.match(digits)) {
-        val = val.replace(digits, function(n) {
-            stack.push(parseFloat(n.replace(/^_/, '-')));
+    if (val) {
+        entry.value = '';
+        var parsed = parseFloat(val.replace(/^_/, '-'));
+        if (isNaN(parsed)) {
+            stack.dispatch(val);
+        } else {
+            stack.push(parsed);
             setSuccess();
-            return '';
-        });
+        }
     }
-    return stack.dispatch(val);
 }
 
 function setEntry(val) {
     document.getElementById('entry').value = val;
 }
 
-// Backspace only sends KeyDown for some reason.
+// The "special" keys need to be snatched up on KeyDown...
 
 function keyDown(ev) {
-    if (ev.ctrlKey) {
+    if (ev.which == 8 && document.getElementById('entry').value == '') {
+        stack.dispatch('pop');
+        ev.preventDefault();
+        redraw();
+    } else if (ev.ctrlKey) {
         switch (ev.which) {
         case 84: // T
             stack.dispatch('swap');
@@ -243,12 +247,9 @@ function keyDown(ev) {
             break;
         }
     }
-    if (ev.which == 8 && document.getElementById('entry').value == '') {
-        stack.dispatch('pop');
-        ev.preventDefault();
-        redraw();
-    }
 }
+
+// But the rest should be processed after they arrive.
 
 function keyPress(ev) {
     switch (ev.which) {
