@@ -24,13 +24,14 @@ var ops = {
     '+': function(a, b) { return a + b; },
     '/': function(a, b) { return a / b; },
     '%': function(a, b) { return a % b; },
-    '~': function(a) { return -a; },
-    '^': Math.pow,
+    '`': Math.pow,
+    'neg': function(a) { return -a; },
 
     // Bits
     '&': function(a, b) { return a & b; },
     '|': function(a, b) { return a | b; },
-    '\\': function(a, b) { return a ^ b; }, // now I'm just making shit up
+    '^': function(a, b) { return a ^ b; },
+    '~': function(a) { return ~a; },
 
     // Logical
     'or': function(a, b) { return a || b; },
@@ -276,6 +277,7 @@ function keyPress(ev) {
     case 59: // ;
     case 92: // \
     case 94: // ^
+    case 96: // `
     case 124: // |
     case 126: // ~
         parseTerm();
