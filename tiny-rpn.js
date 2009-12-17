@@ -144,10 +144,7 @@ UndoableStack.prototype = {
             f(p.value);
     },
     dispatch: function(op) {
-        if (op)
-            var f = ops[op];
-        else
-            return;
+        var f = ops[op];
         if (!f) {
             setError('unknown command: ' + op);
         } else if (f.length > this.length()) {
@@ -238,23 +235,22 @@ function setEntry(val) {
 
 // The "special" keys need to be snatched up on KeyDown...
 
+var ctrlBindings = {
+    'T': 'swap',
+    'Z': 'undo'
+};
+
 function keyDown(ev) {
     if (ev.which == 8 && document.getElementById('entry').value == '') {
         stack.dispatch('pop');
         ev.preventDefault();
         redraw();
     } else if (ev.ctrlKey) {
-        switch (ev.which) {
-        case 84: // T
-            stack.dispatch('swap');
+        var c = String.fromCharCode(ev.which);
+        if (ctrlBindings[c]) {
+            stack.dispatch(ctrlBindings[c]);
             ev.preventDefault();
             redraw();
-            break;
-        case 90: // Z
-            stack.dispatch('undo');
-            ev.preventDefault();
-            redraw();
-            break;
         }
     }
 }
@@ -262,35 +258,17 @@ function keyDown(ev) {
 // But the rest should be processed after they arrive.
 
 function keyPress(ev) {
-    switch (ev.which) {
-    case 13: // enter
-    case 32: // space
-    case 44: // ,
+    var c = String.fromCharCode(ev.which);
+    if (ops[c] || termSep.test(c)) {
         parseTerm();
-        break;
-    case 37: // %
-    case 38: // &
-    case 42: // *
-    case 43: // +
-    case 45: // -
-    case 47: // /
-    case 59: // ;
-    case 92: // \
-    case 94: // ^
-    case 96: // `
-    case 124: // |
-    case 126: // ~
-        parseTerm();
-        stack.dispatch(String.fromCharCode(ev.which));
-        break;
-    default:
-        return;
+        if (ops[c]) stack.dispatch(c);
+        ev.preventDefault();
+        redraw();
     }
-    ev.preventDefault();
-    redraw();
 }
 
 var stack;
+var termSep = /[\s,]/;
 var inputRadix = 10;
 var outputRadix = 10;
 
