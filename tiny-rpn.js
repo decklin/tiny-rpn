@@ -9,7 +9,6 @@ var ops = {
     '+': function(a, b) { return a + b; },
     '/': function(a, b) { return a / b; },
     '%': function(a, b) { return a % b; },
-    '`': Math.pow,
     'neg': function(a) { return -a; },
 
     // Bits
@@ -22,6 +21,14 @@ var ops = {
     'or': function(a, b) { return a || b; },
     'and': function(a, b) { return a && b; },
     'not': function(a) { return !a; },
+
+    // Misc
+    'fact': function(a) {
+        if (a < 1 || a != Math.floor(a))
+            throw 'factorial only defined for non-negative integers';
+        for (var fac = a; --a; fac *= a);
+        return fac;
+    },
 
     // Stack
     'swap': function(a, b) { return [b, a]; },
@@ -40,6 +47,10 @@ var ops = {
     'noop': function() { return []; }
 
 };
+
+// Standard aliases
+
+ops['!'] = ops['fact'];
 
 // Fill in some simple things using the builtin Math object. For some
 // reason, we can't enumerate it, so here's a list of the interesting

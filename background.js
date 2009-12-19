@@ -1,12 +1,22 @@
-if (!localStorage.customOps) localStorage.customOps =
-'\
-ops[\'!\'] = ops[\'fact\'] = function(a) {\n\
-    if (a < 1 || a != Math.floor(a))\n\
-        throw \'factorial only defined on nonnegative integers\';\n\
-    var fac = a;\n\
-    while (--a) fac *= a;\n\
-    return fac;\n\
-};\n\
-\n\
-ctrlBindings[\'N\'] = \'neg\';\
-';
+var defaultCustom = [
+    "// Add a keybinding",
+    "",
+    "ctrlBindings['N'] = 'neg';",
+    "",
+    "// If you want easy access to radix setting, uncomment these",
+    "",
+    "// ctrlBindings['I'] = 'iradix';",
+    "// ctrlBindings['O'] = 'oradix';",
+    "",
+    "// Set up a more convenient alias for 'pow'",
+    "",
+    "ops['`'] = Math.pow;",
+    "",
+    "// If you would rather use ^ for pow, uncomment these",
+    "",
+    "// ops['\\\\'] = ops['^'];",
+    "// ops['^'] = Math.pow;"
+];
+
+if (!localStorage.customOps)
+    localStorage.customOps = defaultCustom.join('\n');
