@@ -66,7 +66,7 @@ var ops = {
         return [b, a];
     },
     pop: function(a) {
-        setEntry(a);
+        document.getElementById('entry').value = a;
         return [];
     },
     drop: function(a) {
@@ -272,10 +272,10 @@ function setSuccess() {
 // The user hit a dispatching key (maybe an op, maybe just whitespace), so
 // we should have either a number or a command in the entry box.
 
-function handleTerm() {
-    var val = document.getElementById('entry').value;
+function handleTerm(entry) {
+    var val = entry.value;
     if (val) {
-        setEntry('');
+        entry.value = '';
         var n = parseTerm(val);
         if (n) {
             stack.push(n);
@@ -300,10 +300,6 @@ function parseNumber(s) {
     return inputRadix == 10 ? parseFloat(s) : parseInt(s, inputRadix);
 }
 
-function setEntry(val) {
-    document.getElementById('entry').value = val;
-}
-
 // The "special" keys need to be snatched up on KeyDown...
 
 var ctrlBindings = {
@@ -312,14 +308,14 @@ var ctrlBindings = {
 };
 
 function keyDown(ev) {
-    if (ev.which == 8 && document.getElementById('entry').value == '') {
+    if (ev.which == 8 && ev.target.value == '') {
         stack.dispatch('pop');
         ev.preventDefault();
         redraw();
     } else if (ev.ctrlKey) {
         var c = String.fromCharCode(ev.which);
         if (ctrlBindings[c]) {
-            handleTerm();
+            handleTerm(ev.target);
             stack.dispatch(ctrlBindings[c]);
             ev.preventDefault();
             redraw();
@@ -332,7 +328,7 @@ function keyDown(ev) {
 function keyPress(ev) {
     var c = String.fromCharCode(ev.which);
     if (ops[c] || termSep.test(c)) {
-        handleTerm();
+        handleTerm(ev.target);
         if (ops[c]) stack.dispatch(c);
         ev.preventDefault();
         redraw();
