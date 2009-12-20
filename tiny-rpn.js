@@ -129,21 +129,16 @@ UndoableStack.prototype = {
         else
             throw 'nothing to undo';
     },
-    length: function() {
-        var n = 0;
-        for (var p = this.curHead(); p; p = p.next)
-            n++;
-        return n;
-    },
-    forEach: function(f) {
-        for (var p = this.curHead(); p; p = p.next)
-            f(p.value);
+    get: function() {
+        for (var p = this.curHead(), vals = []; p; p = p.next)
+            vals.push(p.value);
+        return vals;
     },
     dispatch: function(op) {
         var f = ops[op];
         if (!f) {
             setError('unknown command: ' + op);
-        } else if (f.length > this.length()) {
+        } else if (f.length > this.get().length) {
             setError('stack too small (' + op + ' needs ' + f.length +
                      ' argument' + (f.length > 1 ? 's' : '') + ')');
         } else {
@@ -175,7 +170,7 @@ function redraw() {
     var ol = document.getElementById('stack');
     if (stack.curHead()) {
         ol.innerHTML = '';
-        stack.forEach(function(v) {
+        stack.get().forEach(function(v) {
             var li = document.createElement('li');
             li.innerText = v.toString(outputRadix);
             ol.appendChild(li);
@@ -197,9 +192,7 @@ function setSuccess() {
         style.display = 'none';
         innerHTML = '';
     }
-    var curStack = [];
-    stack.forEach(function(v) { curStack.unshift(v); });
-    localStorage.curStack = JSON.stringify(curStack);
+    localStorage.curStack = JSON.stringify(stack.get().reverse());
 }
 
 // The user hit a dispatching key (maybe an op, maybe just whitespace), so
