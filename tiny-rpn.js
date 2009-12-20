@@ -9,7 +9,9 @@ var ops = {
     '+': function(a, b) { return a + b; },
     '/': function(a, b) { return a / b; },
     '%': function(a, b) { return a % b; },
-    'neg': function(a) { return -a; },
+    sq: function(a) { return a * a; },
+    neg: function(a) { return -a; },
+    inv: function(a) { return 1 / a; },
 
     // Bits
     '&': function(a, b) { return a & b; },
@@ -18,43 +20,107 @@ var ops = {
     '~': function(a) { return ~a; },
 
     // Logical
-    'or': function(a, b) { return a || b; },
-    'and': function(a, b) { return a && b; },
-    'not': function(a) { return !a; },
+    or: function(a, b) { return a || b; },
+    and: function(a, b) { return a && b; },
+    not: function(a) { return !a; },
+
+    // Logs
+    log2: function(a) {
+        return Math.log(a) / Math.LN2;
+    },
+    log10: function(a) {
+        return Math.log(a) / Math.LN10;
+    },
+    alog: function(a) {
+        return Math.pow(10, a);
+    },
+    expm: function(a) {
+        return ops.exp.call(this, a) - 1;
+    },
+
+    // Trig helpers
+    deg: function(a) {
+        return Math.PI * a / 180;
+    },
 
     // Misc
-    'fact': function(a) {
+    fact: function(a) {
         if (a < 1 || a != Math.floor(a))
-            throw 'factorial only defined for non-negative integers';
+            throw 'factorial: need a positive integer';
         for (var fac = a; --a; fac *= a);
         return fac;
     },
+    gcd: function(a, b) {
+        return b == 0 ? a : ops.gcd(b, a % b);
+    },
+    sum: function() {
+        this.pushOnto(null, [this.reduce(ops['+'])]);
+    },
+    prod: function() {
+        this.pushOnto(null, [this.reduce(ops['*'])]);
+    },
+
 
     // Stack
-    'swap': function(a, b) { return [b, a]; },
-    'pop': function(a) { setEntry(a); return []; },
-    'drop': function(a) { return []; },
-    'drop2': function(a, b) { return []; },
-    'dup': function(a) { return [a, a]; },
-    'dup2': function(a) { return [a, a, a]; },
-    'clear': function() { this.pushOnto(null, []); },
+    swap: function(a, b) {
+        return [b, a];
+    },
+    pop: function(a) {
+        setEntry(a);
+        return [];
+    },
+    drop: function(a) {
+        return [];
+    },
+    drop2: function(a, b) {
+        return [];
+    },
+    dropn: function(a) {
+        // Ergh, gotta skip over our arg.
+        for (var i = 0, p = this.curHead().next; i < a; i++)
+            p = p.next;
+        this.pushOnto(p, []);
+    },
+    dup: function(a) {
+        return [a, a];
+    },
+    dup2: function(a) {
+        return [a, a, a];
+    },
+    dupn: function(a, b) {
+        var dups = [a];
+        for (var i = 0; i < b; i++) dups.push(a);
+        return dups;
+    },
+    clear: function() {
+        this.pushOnto(null, []);
+    },
+
+    // Radix setting
+    iradix: function(a) {
+        inputRadix = a;
+        return [];
+    },
+    oradix: function(a) {
+        outputRadix = a;
+        return [];
+    },
+    rradix: function() {
+        inputRadix = outputRadix = 10;
+        return [];
+    },
 
     // Meta
-    'undo': function() { this.rollBack(); },
-    'iradix': function(a) { inputRadix = a; return []; },
-    'oradix': function(a) { outputRadix = a; return []; },
-    'rradix': function() { inputRadix = outputRadix = 10; return []; },
-    'noop': function() { return []; }
-
+    undo: function() {
+        this.rollBack();
+    },
+    noop: function() {
+        return [];
+    }
 };
 
-// Standard aliases
-
-ops['!'] = ops['fact'];
-
-// Fill in some simple things using the builtin Math object. For some
-// reason, we can't enumerate it, so here's a list of the interesting
-// attributes.
+// Fill in the rest using the builtin Math object. For some reason, we
+// can't enumerate it, so here's a list of the interesting attributes.
 
 var mathFunctions = [
     'abs',
@@ -76,6 +142,10 @@ var mathFunctions = [
     'sqrt',
     'tan'
 ];
+mathFunctions.forEach(function(f) {
+    ops[f] = Math[f];
+});
+
 var mathConstants = [
     'E',
     'LN2',
@@ -86,13 +156,14 @@ var mathConstants = [
     'SQRT1_2',
     'SQRT2'
 ];
-
-mathFunctions.forEach(function(f) {
-    ops[f] = Math[f];
-});
 mathConstants.forEach(function(c) {
     ops[c] = function() { return Math[c]; };
 });
+
+// Standard aliases
+
+ops['!'] = ops.fact;
+ops.ln = ops.log;
 
 // Our stack is implemented as a bunch of immutable linked lists that
 // share structure. The user can therefore undo back to any previous
@@ -133,6 +204,9 @@ UndoableStack.prototype = {
         for (var p = this.curHead(), vals = []; p; p = p.next)
             vals.push(p.value);
         return vals;
+    },
+    reduce: function(f) {
+        return this.get().reduce(f);
     },
     dispatch: function(op) {
         var f = ops[op];
