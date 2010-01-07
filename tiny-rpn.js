@@ -266,7 +266,7 @@ function setSuccess() {
         style.display = 'none';
         innerHTML = '';
     }
-    localStorage.curStack = JSON.stringify(stack.get().reverse());
+    config.set('curStack', stack.get().reverse());
 }
 
 // The user hit a dispatching key (maybe an op, maybe just whitespace), so
@@ -341,12 +341,12 @@ var stringPat = /^"(.*?)"?$/;
 var inputRadix = 10;
 var outputRadix = 10;
 
-if (localStorage.customOps)
-    eval('(function(){'+localStorage.customOps+'})();');
+if (config.has('customOps'))
+    eval('(function(){'+config.get('customOps')+'})();');
 
 function init() {
-    if (localStorage.curStack) {
-        stack = new UndoableStack(JSON.parse(localStorage.curStack));
+    if (config.has('curStack')) {
+        stack = new UndoableStack(config.get('curStack'));
     } else {
         stack = new UndoableStack();
         setError('welcome! <a href="help.html" target="_blank">' +
