@@ -342,7 +342,7 @@ var inputRadix = 10;
 var outputRadix = 10;
 
 if (localStorage.customOps)
-    eval(localStorage.customOps);
+    eval('(function(){'+localStorage.customOps+'})();');
 
 function init() {
     if (localStorage.curStack) {
