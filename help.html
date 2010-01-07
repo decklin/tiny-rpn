@@ -3,7 +3,7 @@
 <html>
 <head>
   <title>Tiny RPN Help</title>
-  <link rel="stylesheet" type="text/css" href="options.css" />
+  <link rel="stylesheet" type="text/css" href="common/options.css" />
   <script>
     function init() {
         document.getElementById('applink').href =
@@ -13,7 +13,6 @@
 </head>
 
 <body onload="init();">
-<div class="content">
   <h1>Tiny RPN</h1>
   <p>Tiny RPN is a <a href=
   "http://en.wikipedia.org/wiki/Reverse_Polish_notation">Reverse
@@ -34,7 +33,7 @@
       addition) in the entry box; instead of displaying the character, the
       stack will be updated. The arithmetic operations are:</p>
 
-      <table>
+      <table class="commands">
         <tr>
           <th>Operator</th>
           <th>Pops</th>
@@ -112,7 +111,7 @@
       <p>To perform a named operation, type in its name followed by a
       space/comma/enter. Named commands are:</p>
 
-      <table>
+      <table class="commands">
         <tr>
           <th>Command</th>
           <th>Pops</th>
@@ -219,7 +218,7 @@
 
       <p>plus these standard (to JavaScript, anyway) math functions:</p>
 
-      <table>
+      <table class="commands">
         <tr>
           <th>Function</th>
           <th>Pops</th>
@@ -338,7 +337,7 @@
 
       <p>and these constants:</p>
 
-      <table>
+      <table class="commands">
         <tr><th>Constant</th><th>Description</th></tr>
         <tr><td><code>E</code></td><td>Base of natural logarithm</td></tr>
         <tr><td><code>LN2</code></td><td>Natural logarithm of 2</td></tr>
@@ -353,7 +352,7 @@
 
     <li>
       <p>Some functions are available via control keys:</p>
-      <table>
+      <table class="commands">
         <tr><th>Key</th><th>Operation</th></tr>
         <tr><td>Ctrl-Z</td><td><code>undo</code></td></tr>
         <tr><td>Ctrl-T</td><td><code>swap</code> (think "transpose")</td></tr>
@@ -395,6 +394,5 @@
   enough to license it Creative Commons BY-NC. See the source code for
   a complete listing of licenses.) Here's the original:
   <a href="http://www.xkcd.com/645/">Reverse Polish Sausage</a>.</p>
-</div>
 </body>
 </html>
