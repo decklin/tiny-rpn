@@ -287,7 +287,7 @@ function handleTerm(entry) {
 }
 
 function parseTerm(s) {
-    var match = stringPat.exec(s);
+    var match = stringTerm.exec(s);
     if (match) {
         return match[1];
     } else {
@@ -323,11 +323,18 @@ function keyDown(ev) {
     }
 }
 
-// But the rest should be processed after they arrive.
+// But the rest should be processed after they arrive. Operator or
+// separator chars will dispatch, unless we're in the middle of a
+// string.
+//
+// Note: there is at least one single-character "function" sort of
+// operator (the constant 'E' from Math.E), and for the sake of not
+// surprising users we will only dispatch on nonalphanumeric chars.
 
 function keyPress(ev) {
     var c = String.fromCharCode(ev.which);
-    if (ops[c] || termSep.test(c)) {
+    var isOp = !alphaNumeric.test(c) && ops[c];
+    if (!openString.test(ev.target.value) && (isOp || termSep.test(c))) {
         handleTerm(ev.target);
         if (ops[c]) stack.dispatch(c);
         ev.preventDefault();
@@ -337,7 +344,9 @@ function keyPress(ev) {
 
 var stack;
 var termSep = /[\s,]/;
-var stringPat = /^"(.*?)"?$/;
+var openString = /^"[^"]*$/;
+var stringTerm = /^"([^"]*)"?$/;
+var alphaNumeric = /\w+/;
 var inputRadix = 10;
 var outputRadix = 10;
 
