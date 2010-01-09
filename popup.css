@@ -13,12 +13,13 @@ body {
 #entry {
     margin: 0;
     padding: 4px;
-    width: 168px; /* assuming native border is 2px */
+    border: 1px inset #ddd;
+    width: 170px;
 }
 #stack {
     margin: 10px 0 0 0;
     padding: 1px 0 0 0;
-    border: 2px transparent; /* ditto, should match entry */
+    border: 1px transparent;
     max-height: 600px;
     overflow-y: auto;
 }
