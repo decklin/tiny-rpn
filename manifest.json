@@ -1,7 +1,7 @@
 {
   "name": "Tiny RPN",
   "description": "Popup RPN calculator",
-  "version": "2.1",
+  "version": "2.2",
   "icons": {
     "32": "rps-32.png",
     "48": "rps-48.png",
