@@ -10,7 +10,7 @@
   "background_page": "background.html",
   "options_page": "options.html",
   "browser_action": {
-    "default_icon": "rps-19.png",
+    "default_icon": "tiny-rpn-19.png",
     "default_title": "Tiny RPN",
     "name": "RPN Calculator",
     "popup": "popup.html"
