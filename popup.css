@@ -16,6 +16,9 @@ body {
     border: 1px inset #ddd;
     width: 170px;
 }
+#entry:focus {
+    outline: none;
+}
 #stack {
     margin: 10px 0 0 0;
     padding: 1px 0 0 0;
