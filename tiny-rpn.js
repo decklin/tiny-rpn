@@ -376,12 +376,6 @@ if (config.has('customOps'))
     eval('(function(){'+config.get('customOps')+'})();');
 
 function init() {
-    // Big ugly hack: attempt to determine if we are being loaded
-    // outside of the popup by checking outerHeight. No guarantees
-    // this will continue to work!
-    if (window.outerHeight)
-        document.body.style.padding = '5px';
-
     if (config.has('curStack')) {
         stack = new UndoableStack(config.get('curStack'));
     } else {
